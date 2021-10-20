@@ -1,8 +1,5 @@
-// eepromReadWPR.c can be compiled with gcc eepromReadWPR.c -o eepromReadWPR
-// eeeprom.isLocked relies on eepromReadWPR executable being in the Settings folder
-// Maybe this should be in a bin folder somewhere with a Makefile that can run
-// in a postUpdate script to ensure programs that require compiling are compiled 
-// when updated.
+// eepromReadWPR.c 
+// eeeprom.isLocked relies on eepromReadWPR executable being in the PATH
 
 #include <errno.h>
 #include <string.h>
@@ -43,11 +40,16 @@ int i2c_write_read(int handle,
 }
 
 int main(int argc, char** argv) {
-  const char filename[] = "/dev/i2c-1";
+  if(argc < 2) {
+    fprintf(stderr, "Usage: eepromReadWPR <i2c device>\n");
+    exit(1);
+  }
+
+  const char* filename = argv[1];
   int file;
 
   if((file = open(filename, O_RDWR)) < 0) {
-    printf("Failed to open the bus.\n");
+    fprintf(stderr, "Failed to open the bus.\n");
     exit(1);
   }
 
